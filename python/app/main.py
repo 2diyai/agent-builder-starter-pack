@@ -1,7 +1,9 @@
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from io import BytesIO
 from openpyxl import load_workbook
 from pydantic import BaseModel
+
+from app.excel_pipeline import ExcelToLLMPipeline, JsonFormat
 
 app = FastAPI()
 
@@ -62,4 +64,34 @@ async def upload_excel(file: UploadFile = File(...)):
         "sheet_count": len(workbook.sheetnames),
         "sheets": sheets,
     }
+
+
+@app.post("/upload-excel-structured")
+async def upload_excel_structured(
+    file: UploadFile = File(...),
+    json_format: str = Query(default=JsonFormat.HYBRID, pattern="^(flat|object|hybrid)$"),
+    max_rows_per_table: int | None = Query(default=None, ge=1),
+):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Missing file name")
+
+    allowed_extensions = (".xlsx", ".xlsm", ".xltx", ".xltm")
+    if not file.filename.lower().endswith(allowed_extensions):
+        raise HTTPException(
+            status_code=400,
+            detail="Only modern Excel files are supported (.xlsx, .xlsm, .xltx, .xltm)",
+        )
+
+    file_bytes = await file.read()
+    if not file_bytes:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty")
+
+    try:
+        pipeline = ExcelToLLMPipeline(
+            json_format=json_format,
+            max_rows_per_table=max_rows_per_table,
+        )
+        return pipeline.process_workbook_bytes(file_bytes, source_name=file.filename)
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=f"Unable to process workbook: {error}")
 
