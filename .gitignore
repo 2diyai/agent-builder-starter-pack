@@ -1,0 +1,29 @@
+# Docker volumes and data
+*.log
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# N8N data (if mounted locally)
+n8n_data/
+.n8n/
+
+# Ollama data (if mounted locally)
+ollama_data/
+.ollama/
+
+
+# Confidential
+.env
+*/.env
+
+# Development aid files
+dev/
+

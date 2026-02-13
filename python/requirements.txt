@@ -1,6 +1,10 @@
+# for N8N compatibility
 fastapi==0.115.0
 uvicorn==0.30.6
-matplotlib
-openpyxl 
-pandas
-seaborn
+python-multipart==0.0.22
+
+# for application functionality
+matplotlib==3.10.8
+openpyxl==3.1.5 
+pandas==3.0.0
+seaborn==0.13.2
