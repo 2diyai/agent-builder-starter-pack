@@ -18,4 +18,4 @@ This project is provided “as is”, without any warranties or guarantees of an
 
 The authors accept no responsibility or liability for any damages, losses, security issues, data loss, or other consequences arising from the use of this repository.
 
-Use it at your own risk. In case of doubts seek advice before using.
+In case of doubt, seek advise before using.
