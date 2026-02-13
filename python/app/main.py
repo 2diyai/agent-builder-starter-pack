@@ -10,7 +10,7 @@ class Payload(BaseModel):
 def health():
     return {"status": "ok"}
 
-@app.post("/run")
+@app.post("/test-post")
 def run(payload: Payload):
     # Minimal example: reverse the input text
     return {"result": f"{payload.text} -> {payload.text[::-1]}"}
