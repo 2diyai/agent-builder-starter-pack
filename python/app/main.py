@@ -1,4 +1,6 @@
-from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from docling.document_converter import DocumentConverter
+from docling.datamodel.base_models import DocumentStream
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile, Request
 from io import BytesIO
 from openpyxl import load_workbook
 from pydantic import BaseModel
@@ -95,3 +97,23 @@ async def upload_excel_structured(
     except Exception as error:
         raise HTTPException(status_code=400, detail=f"Unable to process workbook: {error}")
 
+@app.post("/docling")
+async def docling(request: Request):
+    file_bytes = await request.body()
+
+    if not file_bytes:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty")
+
+    try:
+        stream = BytesIO(file_bytes)
+
+        # Name + extension matter so docling can infer format
+        doc_stream = DocumentStream(name="upload.xlsx", stream=stream)
+
+        converter = DocumentConverter()
+        result = converter.convert(doc_stream)  # <- single DocumentStream, not BytesIO
+
+        markdown = result.document.export_to_markdown()
+        return {"markdown": f"The content of the file is:\n{markdown}", "filename": 'filename.xlsx'}
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=f"Unable to process document: {error}")

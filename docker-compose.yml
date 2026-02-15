@@ -28,6 +28,7 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - app_net
+    # TODO: add option for NVIDIA GPU support
 
   python:
     build:
