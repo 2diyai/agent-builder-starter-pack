@@ -1,4 +1,8 @@
-# Agent Builder Setup Instructions for MacOS
+# Agent Builder Setup Instructions for Windows
+
+> **WORK IN PROGRESS**
+
+
 All files and information required are in the github repo [Agent Builder Starter Pack](https://github.com/2diyai/agent-builder-starter-pack/)
 
 ## 1. Create the project folder
@@ -12,8 +16,6 @@ All files and information required are in the github repo [Agent Builder Starter
     ```shell
     git clone git@github.com:2diyai/agent-builder-starter-pack.git agent-builder
     ```
-
-
 
 ## 2. Install software
 This will install all required software into their containers and set it up as a one system. It will install N8N and Ollama. It will also create some disk space to keep configurations, workflows and models locally when you stop Docker and relieve you from having to download them every time.

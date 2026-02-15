@@ -1,38 +1,37 @@
 # Docker Installation Guide - MacOS
 
 ## Step 1: Download Docker
-1. Go to [www.docker.com](https://www.docker.com)
+1. **Go to [www.docker.com](https://www.docker.com)**
 		    
 ![image.png](imgs/docker.com.png)  
-2. Locate and click the download button for Docker Desktop for Mac.
+2. **Locate and click the download button for Docker Desktop for Mac.**
 		    
+- Typically, you will have a choice between:
+    - "Download for Mac - Apple Silicon" (for newer M1/M2/M3 Macs)
+    - "Download for Mac - Intel chip" (for older Intel-based Macs)
+    - *Note: *How do I check whether I have Apple Silicon or Intel?:*
+        - *Click the Apple logo () in the top-left corner of your computer screen → Select "About This Mac"*
+        - *If it says "Chip: Apple M1" or "M2" or "M3" → Choose Apple Silicon*
+        - *If it says "Processor: Intel" → Choose Intel chip*
+
 ![image.png](imgs/docker-download.png)  
 
-Typically, you'll see:
-- "Download for Mac - Apple Silicon" (for newer M1/M2/M3 Macs)
-- "Download for Mac - Intel chip" (for older Intel-based Macs)
-
-> Notes:
-- Which Mac do I have - Apple Silicon or Intel? How to check:
-    - Click the Apple logo () in the top-left corner of your computer screen → Select "About This Mac"
-    - If it says "Chip: Apple M1" or "M2" or "M3" → Choose Apple Silicon
-    - If it says "Processor: Intel" → Choose Intel chip
 - If prompted to sign in, look for a "Continue without signing in" or direct download option
 
-3. Download
+3. **Download**
 - A file named something like `Docker.dmg` or `Docker Desktop.dmg` will be downloaded. 
 - It is a large file (500MB - 800MB) and will take several minutes to load
 
 ## Step 2: Locate downloaded file
-1. Find the downloaded `Docker.dmg` file and open it to begin installation.
+1. **Find the downloaded `Docker.dmg` file and open it to begin installation.**
     - **Option A**: Click directly on the downloaded file in your browser's download bar/area
     - **Option B**: Open **Finder** → Click **Downloads** in the left sidebar
     - **Option C**: Look on your Desktop if your browser saves files there
-2. Double-click on the `Docker.dmg` file to open it
-- An installation window will open, typically showing The Docker (whale) logo icon   ![image.png](imgs/docker-logo.png)
-    - An arrow in the middle pointing right
-    - The Applications folder icon on the right
-    - Instructions that usually say something like "Drag Docker to Applications"
+2. **Double-click on the `Docker.dmg` file to open it**
+    - An installation window will open, typically showing The Docker (whale) logo icon ![image.png](imgs/docker-logo.png):
+        - An arrow in the middle pointing right
+        - The Applications folder icon on the right
+        - Instructions that usually say something like "Drag Docker to Applications"
 
 ## Step 3: Installing Docker by Dragging to Applications
 1. Click and hold on the Docker (whale) icon on the left side of the window
@@ -127,3 +126,5 @@ Wait for Docker to complete its initial startup and accept the Service Agreement
         - 2. Click it
 
 ## Docker is installed
+
+> Next step: [Setup agent builder starter pack](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Fsetup-mac.md)

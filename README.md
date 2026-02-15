@@ -1,19 +1,28 @@
 # Agent Builder Starter Pack
 
-Agent Builder Starter Pack allows you to easily and safely install all software and resources needed to run agentic workflows and AI agents, and access locally run LLMs.
+> This repo is a work in progress
 
-This is intended for non technical people who want to experiment with agentic AI on their own computer.
+**Agent Builder Starter Pack** allows you to easily and safely install all software and resources needed to run simple agentic workflows and experiment with AI agents. It also allows to access locally run LLMs.
 
-- N8N orchestration
-- Ollama LLM inference
+It is intended for non technical people who want to experiment with agentic AI on their own computer.
 
 
-## Setup Instructions
+# Setup Instructions
 
-### MacOS
+## MacOS
 
 1. Install docker: follow instructions [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Finstall-docker-mac.md)
-2. Setup your project folder: follow instruction: [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Fsetup-mac.md)
+2. Setup agent builder starter pack: follow instruction [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Fsetup-mac.md)
+
+## Windows 11
+
+1. Install docker: follow instructions [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Finstall-docker-windows.md)
+2. Setup agent builder starter pack: follow instruction [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Fsetup-windows.md)
+
+## Know More
+> WIP
+- N8N orchestration
+- Ollama LLM inference
 
 ## Disclaimer
 

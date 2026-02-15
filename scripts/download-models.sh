@@ -17,12 +17,13 @@ fi
 
 # Pull models line by line (skip empty lines and comments)
 while IFS= read -r model || [[ -n "$model" ]]; do
-  model="${model%%#*}"
-  model="$(echo -e "$model" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  model="${model%$'\r'}"             # handle Windows line endings
+  model="${model%%#*}"               # remove inline comments
+  model="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' <<< "$model")"
   [[ -z "$model" ]] && continue
 
   echo "Pulling model: $model"
-  docker compose exec -T ollama ollama pull "$model"
+  docker compose exec -T ollama ollama pull "$model" </dev/null
 done < "$MODELS_FILE"
 
 echo "Model download complete."
