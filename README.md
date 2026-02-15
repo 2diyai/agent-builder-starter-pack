@@ -9,8 +9,11 @@ This is intended for non technical people who want to experiment with agentic AI
 
 
 ## Setup Instructions
-work in progress
 
+### MacOS
+
+1. Install docker: follow instructions [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Finstall-docker-mac.md)
+2. Get thebrequired software: follow instructions [here]()
 
 ## Disclaimer
 
