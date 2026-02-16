@@ -72,6 +72,9 @@ Ollama needs specific models to be downloaded to work. The file `list-of-models.
 
 See the full list of models on Ollama's webside [here](https://ollama.com/search)
 
+> Note: the file downloaded are large (between 3 to 6 GB), it will take a long time.
+
+
 To download all models in the list:
 - open a terminal window in your project folder (top folder)
 - run the following command:
@@ -92,5 +95,23 @@ To download all models in the list:
     success 
     Model download complete.
     ```
-- when you see `Model downld complete`, the models are loaded.
+- when you see `Model download complete`, the models are loaded.
 
+### 2.4 Stop Agent Builder
+When you are done using the agent builder, you can safely stop the containers and exit Docker. The file you have downloaded and the configurations you have worked on are saved on your hard drive and not lost.
+
+- open a terminal window in your project folder (top folder)
+- run the following command:
+    ```shell
+    ./scripts/stop.sh
+    ```
+- you will see something like:
+    ```shell
+    [+] up 4/4
+    ✔ Network n8n-ollama-dev_app_net Removed                               0.3s
+    ✔ Container my_ollama            Removed                               0.2s
+    ✔ Container my_python            Removed                               0.2s
+    ✔ Container my_n8n               Removed                               0.1s
+    Services stopped.
+    ```
+- when you see `Services stopped`, N8N and Ollama are stopped and the container are removed.

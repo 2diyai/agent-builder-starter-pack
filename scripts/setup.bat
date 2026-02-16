@@ -1,7 +1,8 @@
 @echo off
 setlocal
 
-set ROOT_DIR=%~dp0..
+for %%I in ("%~dp0..") do set "ROOT_DIR=%%~fI\"
+echo Setting up in root directory: %ROOT_DIR%
 cd /d "%ROOT_DIR%"
 
 docker info >nul 2>&1

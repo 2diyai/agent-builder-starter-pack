@@ -2,10 +2,10 @@
 
 ## Step 1: Download Docker
 1. **Go to [www.docker.com](https://www.docker.com)**
-		    
+
 ![image.png](imgs/docker.com.png)  
 2. **Locate and click the download button for Docker Desktop for Mac.**
-		    
+
 - Typically, you will have a choice between:
     - "Download for Mac - Apple Silicon" (for newer M1/M2/M3 Macs)
     - "Download for Mac - Intel chip" (for older Intel-based Macs)
@@ -23,7 +23,7 @@
 - It is a large file (500MB - 800MB) and will take several minutes to load
 
 ## Step 2: Locate downloaded file
-1. **Find the downloaded `Docker.dmg` file and open it to begin installation.**
+1. **Find the downloaded `Docker.dmg` file**
     - **Option A**: Click directly on the downloaded file in your browser's download bar/area
     - **Option B**: Open **Finder** → Click **Downloads** in the left sidebar
     - **Option C**: Look on your Desktop if your browser saves files there
@@ -125,6 +125,32 @@ Wait for Docker to complete its initial startup and accept the Service Agreement
         - 1. Look for text that says **"Continue without signing in"** or **"Skip"**
         - 2. Click it
 
-## Docker is installed
+## Docker Installed
+- After completing Step 8, the **Docker Desktop Dashboard** opens as the main application window, with a layout as below or a variation of it
 
-> Next step: [Setup agent builder starter pack](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Fsetup-mac.md)
+```
+        ╔════════════════════════════════════════════════════════════╗
+        ║ Docker Desktop                    🔍Search    👤[Username]║
+        ╠════════════════════════════════════════════════════════════╣
+        ║ 📦 Containers  🖼️ Images  💾 Volumes  🔧 Dev Environments║
+        ╠════════════════════════════════════════════════════════════╣
+        ║                                                            ║
+        ║                  Getting Started                           ║
+        ║                                                            ║
+        ║         Welcome to Docker Desktop!                         ║
+        ║                                                            ║
+        ║    Learn the basics and discover what you can build        ║
+        ║                                                            ║
+        ║              [Run a sample container]                      ║
+        ║                                                            ║
+        ║              [View documentation]                          ║
+        ║                                                            ║
+        ║                                                            ║
+        ║  Or start by running your first container:                 ║
+        ║                                                            ║
+        ║  $ docker run hello-world                                  ║
+        ║                                                            ║
+        ╚════════════════════════════════════════════════════════════╝
+```
+- There is nothing else to do in docker here. You can minimize the windows and get ready to install the **agent builder starter pack**.
+- **NEXT**: Instructions to setup the agent builder starter pack on MacOS [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Fsetup-mac.md)
