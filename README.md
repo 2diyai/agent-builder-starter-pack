@@ -28,7 +28,7 @@ The Starter Pack includes three main components:
 
 - **<a href="https://n8n.io/" target="_blank" rel="noopener noreferrer">N8N</a>** – This is the orchestration tool. It allows you to design and manage workflows, connect tools together, and build agent-like processes in a visual way.
 -  **<a href="https://ollama.com/" target="_blank" rel="noopener noreferrer">Ollama</a>** – This runs large language models (LLMs) locally on your computer, so you can experiment with AI without sending data to external services.
--  **<a jref="https://pytorch.org/" target="_blank" rel="noopener noreferrer">Custom Python Service</a>** – This adds extra capabilities that are not available in standard N8N nodes, giving you more flexibility for advanced workflows.
+-  **<a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">Custom Python Service</a>** – This adds extra capabilities that are not available in standard N8N nodes, giving you more flexibility for advanced workflows.
 
 Together, these components create a safe and practical environment to explore agentic AI directly on your own machine.
 
