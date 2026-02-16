@@ -1,14 +1,12 @@
 # Docker Installation Guide - Windows
 
-> **WORK IN PROGRESS**
-
 ## Step 0: Requirement Checks
 The requirement to run Docker and required components (WSL 2):
 - Windows 11 (64-bit)
 - 8GB+ of RAM
 - Virtualization enabled in BIOS (usually enabled by default on modern systems)
 
-If you are uncertain, see [here] for a detailed check list with instructions.
+If you are uncertain, see [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs/install-docker-windows-requirements.md) for a detailed check list with instructions.
 
 ## Step 1: Download Docker Installer
 1. **Go to [www.docker.com](https://www.docker.com)**
