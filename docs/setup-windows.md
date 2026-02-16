@@ -85,6 +85,9 @@ This will install all required software into their containers and set it up as a
         Setup complete.
     ```
 - When you see `Setup complete`, the installation is done.
+- *Note:*
+    - *Depending on the quality of your connection, some of the download may fail and you will get an error message. It is safe to try again with the same `setup.sh` command a little later.*
+
 
 ### 2.2 Start N8N and Ollama
 Before you can use N8N and Ollama you need to start the containers

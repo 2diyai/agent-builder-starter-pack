@@ -3,9 +3,10 @@ All files and information required are in the github repo [Agent Builder Starter
 
 ## 1. Create the project folder
 ### Option 1 (easy)
+- Select a work folder
 - Download the zip including all required files. Click [here](https://github.com/2diyai/agent-builder-starter-pack/archive/refs/heads/main.zip) to download.
-- Create a project folder (e.g. `agent-builder`) in a convenient place on your system with command.
-- Unzip all files from the ZIP into this project folder
+- Unzip all files from the ZIP into the work folder
+- Change the name into a convenient name (e.g. `agent-builder`)
 
 ### Option 2 (more robust)
 - Clone the repository in a convenient place on your system with command:
@@ -13,12 +14,10 @@ All files and information required are in the github repo [Agent Builder Starter
     git clone git@github.com:2diyai/agent-builder-starter-pack.git agent-builder
     ```
 
-
-
 ## 2. Install software
 This will install all required software into their containers and set it up as a one system. It will install N8N and Ollama. It will also create some disk space to keep configurations, workflows and models locally when you stop Docker and relieve you from having to download them every time.
 
-- open a terminal window in your project folder (top folder)
+- open a terminal window in the project folder you created above (top folder e.g. `agent-builder`)
     - navigate to the project folder in Finder
     - turn on the path bar if needed: View → Show Path Bar.
     - in the path bar (bottom of the Finder window), `Control‑click` the folder and choose `Open in Terminal` (or `Services` → `New Terminal Tab at Folder`)
@@ -47,6 +46,8 @@ This will install all required software into their containers and set it up as a
         Setup complete.
     ```
 - When you see `Setup complete`, the installation is done.
+- *Note:*
+    - *Depending on the quality of your connection, some of the download may fail and you will get an error message. It is safe to try again with the same `setup.sh` command a little later.*
 
 ### 2.2 Start N8N and Ollama
 Before you can use N8N and Ollama you need to start the containers
