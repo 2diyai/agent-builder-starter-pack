@@ -1,4 +1,4 @@
-# Checks for requirements -
+# Checks for requirements - Windows 11
 
 - Admin Rights
 - Virtualization enabled
