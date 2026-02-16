@@ -70,7 +70,7 @@ Before you can use N8N and Ollama you need to start the containers
 ### 2.3 Download models (once)
 Ollama needs specific models to be downloaded to work. The file `list-of-models.txt` includes a list of a few models convenient to download.
 
-See the full list of models on Ollama's webside [here](https://ollama.com/search)
+See the full list of models on Ollama's website [here](https://ollama.com/search)
 
 > Note: the file downloaded are large (between 3 to 6 GB), it will take a long time.
 
