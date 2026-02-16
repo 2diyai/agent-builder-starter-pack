@@ -11,7 +11,7 @@ The requirement to run Docker and required components (WSL 2):
 If you are uncertain, see [here] for a detailed check list with instructions.
 
 ## Step 1: Download Docker Installer
-1. **Go to [www.docker.com](https://www.docker.com)**
+1. **Go to <a href="https://www.docker.com" target="_blank" rel="noopener noreferrer">www.docker.com</a>**
 
 ![docker home page](imgs/docker.com.png)  
 2. **Locate and click the download button for Docker Desktop for Windows.**

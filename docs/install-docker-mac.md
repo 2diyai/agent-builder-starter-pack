@@ -1,7 +1,7 @@
 # Docker Installation Guide - MacOS
 
 ## Step 1: Download Docker
-1. **Go to [www.docker.com](https://www.docker.com)**
+1. **Go to <a href="https://www.docker.com" target="_blank" rel="noopener noreferrer">www.docker.com</a>**
 
 ![image.png](imgs/docker.com.png)  
 2. **Locate and click the download button for Docker Desktop for Mac.**
