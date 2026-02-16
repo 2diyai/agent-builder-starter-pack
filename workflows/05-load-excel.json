@@ -1,0 +1,159 @@
+{
+  "name": "05-load-excel",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python:8000/upload-excel-structured",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -592,
+        -80
+      ],
+      "id": "123c3b33-539a-4ea9-9c7e-43627d3af076",
+      "name": "convert-excel"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are a helpful assistant, and you are helping the user to work with an excel workbook. Reply to each query from the user taking into account the content of the workbook in file {{ $json.workbook }}:\n- number of worksheets: {{ $json.sheet_count }} \n- content of the sheets: {{ $json.sheets }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -368,
+        -80
+      ],
+      "id": "48e97c13-268f-4306-848e-b067d1d8b6ab",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gemma3:4b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        144
+      ],
+      "id": "ddcce60b-2550-43c0-9d01-45ab10f649c2",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "GBKflCrWEAR6Hb1i",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -232,
+        144
+      ],
+      "id": "d703b9ec-99ff-4a27-ae24-8941f0ee1c4b",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "I am your excel advisor",
+        "options": {
+          "allowFileUploads": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -816,
+        -80
+      ],
+      "id": "9bfb2494-492b-45e5-943b-9abed650eebd",
+      "name": "When chat message received",
+      "webhookId": "531cbd6a-3744-41c8-a010-103407064c7b"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "upload-excel": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "upload-excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "62e2a1e7-00fe-4b7d-a58e-82d94f30a51c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "165434c629b2d619728312a3d4d76a1c9d5da806ea3975a14855031f79835066"
+  },
+  "id": "xxafgAAcwH2Z98Iu",
+  "tags": []
+}

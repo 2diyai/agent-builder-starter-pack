@@ -32,6 +32,10 @@ The Starter Pack includes three main components:
 
 Together, these components create a safe and practical environment to explore agentic AI directly on your own machine.
 
+## How do I work with the Agent Builder Starter Pack?
+
+> Work in Progress
+
 
 ## Disclaimer
 
