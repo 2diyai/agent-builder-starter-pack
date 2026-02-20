@@ -28,6 +28,14 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - app_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
 
   python:
     build:
