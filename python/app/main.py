@@ -9,28 +9,23 @@ from io import BytesIO
 from openpyxl import load_workbook
 from pydantic import BaseModel
 from typing import Any, Optional
-
-from app.excel_pipeline import ExcelToLLMPipeline, JsonFormat
+import base64
 
 app = FastAPI()
 
-class Payload(BaseModel):
-    text: str
-
-@app.get("/health")
+@app.get("/api-health")
 def health():
     return {"status": "ok"}
+
+class Payload(BaseModel):
+    text: str
 
 @app.post("/test-post")
 def run(payload: Payload):
     # Minimal example: reverse the input text
     return {"result": f"{payload.text} -> {payload.text[::-1]}"}
 
-class MultiplyPayload(BaseModel):
-    a: float
-    b: float
-
-
+# Code for docling endpoint
 SUPPORTED_OFFICE_EXTENSIONS: dict[str, str] = {
     ".xlsx": "excel",
     ".xlsm": "excel",
@@ -44,17 +39,22 @@ SUPPORTED_OFFICE_EXTENSIONS: dict[str, str] = {
     ".pptm": "powerpoint",
     ".potx": "powerpoint",
     ".potm": "powerpoint",
+    ".pdf": "pdf",
 }
 
-
 def _ext(name: str) -> str:
+    """Extracts the file extension from a given filename or stream name. 
+
+    Returns the extension in lowercase, including the dot (e.g., '.xlsx'). 
+    If no valid extension is found, returns an empty string.
+    """
     name = (name or "").lower().strip()
     if "." not in name:
         return ""
     return "." + name.rsplit(".", 1)[-1]
 
-
 def _validate_supported_office_filename(filename: str) -> None:
+    """Validates that the given filename has a supported office file extension."""
     if _ext(filename) not in SUPPORTED_OFFICE_EXTENSIONS:
         allowed = ", ".join(sorted(SUPPORTED_OFFICE_EXTENSIONS.keys()))
         raise HTTPException(
@@ -62,31 +62,53 @@ def _validate_supported_office_filename(filename: str) -> None:
             detail=f"Unsupported file type. Allowed extensions: {allowed}",
         )
 
-
 def _infer_doc_type(filename: str) -> str:
     return SUPPORTED_OFFICE_EXTENSIONS.get(_ext(filename), "document")
-
 
 async def _extract_file_bytes(
     request: Request,
     fallback_filename: str,
 ) -> tuple[bytes, str]:
+    """Extracts file bytes and a stream name from the incoming request."""
     content_type = (request.headers.get("content-type") or "").lower()
 
     if "multipart/form-data" in content_type:
         form = await request.form()
         for _, value in form.multi_items():
-            if isinstance(value, UploadFile):
-                filename = value.filename or fallback_filename
+            is_upload = hasattr(value, "read") and hasattr(value, "filename")
+            if is_upload:
+                filename = getattr(value, "filename", None) or fallback_filename
                 file_bytes = await value.read()
-                return file_bytes, filename
+                if file_bytes:
+                    return file_bytes, filename
+
+        filename = form.get("filename") or form.get("fileName") or fallback_filename
+
+        for key in ("file", "data", "content", "binary", "payload"):
+            value = form.get(key)
+            if value is None:
+                continue
+
+            if isinstance(value, str):
+                text = value.strip()
+                if not text:
+                    continue
+
+                try:
+                    return base64.b64decode(text, validate=True), str(filename)
+                except Exception:
+                    return text.encode("utf-8"), str(filename)
+
+            if isinstance(value, (bytes, bytearray)) and value:
+                return bytes(value), str(filename)
+
         raise HTTPException(status_code=400, detail="No file found in multipart form-data")
 
     file_bytes = await request.body()
     return file_bytes, fallback_filename
 
-
 class HierarchyMarkdownDocSerializer(MarkdownDocSerializer):
+    """Custom serializer that adds <meta> tags to represent group hierarchy in the document."""
     def _format_group(self, grp: GroupItem) -> str:
         label = getattr(grp, "label", None)
         label_txt = label.value if hasattr(label, "value") else str(label or "GROUP")
@@ -175,111 +197,16 @@ class HierarchyMarkdownDocSerializer(MarkdownDocSerializer):
 
         return parts
 
-
 def export_to_markdown_with_hierarchy(
     doc: DoclingDocument,
     doc_type: str,
     source: str,
     **kwargs: Any,
 ) -> str:
+    """Exports the given document to markdown format, including group hierarchy as <meta> tags."""
     serializer = HierarchyMarkdownDocSerializer(doc=doc)
     body = serializer.serialize(**kwargs).text
     return f'<<DOC_START type={doc_type} source="{source}">>\n{body}\n<<DOC_END>>'
-
-@app.post("/multiply")
-def multiply(payload: MultiplyPayload):
-    return {"result": payload.a * payload.b}
-
-@app.post("/upload-excel")
-async def upload_excel(file: UploadFile = File(...)):
-    if not file.filename:
-        raise HTTPException(status_code=400, detail="Missing file name")
-
-    allowed_extensions = (".xlsx", ".xlsm", ".xltx", ".xltm")
-    if not file.filename.lower().endswith(allowed_extensions):
-        raise HTTPException(
-            status_code=400,
-            detail="Only modern Excel files are supported (.xlsx, .xlsm, .xltx, .xltm)",
-        )
-
-    file_bytes = await file.read()
-    if not file_bytes:
-        raise HTTPException(status_code=400, detail="Uploaded file is empty")
-
-    try:
-        workbook = load_workbook(filename=BytesIO(file_bytes), data_only=True)
-    except Exception as error:
-        raise HTTPException(status_code=400, detail=f"Invalid Excel file: {error}")
-
-    sheets = []
-    for sheet_name in workbook.sheetnames:
-        worksheet = workbook[sheet_name]
-        sheets.append(
-            {
-                "name": sheet_name,
-                "max_row": worksheet.max_row,
-                "max_column": worksheet.max_column,
-            }
-        )
-
-    return {
-        "filename": file.filename,
-        "sheet_count": len(workbook.sheetnames),
-        "sheets": sheets,
-    }
-
-
-@app.post("/upload-excel-structured")
-async def upload_excel_structured(
-    file: UploadFile = File(...),
-    json_format: str = Query(default=JsonFormat.HYBRID, pattern="^(flat|object|hybrid)$"),
-    max_rows_per_table: int | None = Query(default=None, ge=1),
-):
-    if not file.filename:
-        raise HTTPException(status_code=400, detail="Missing file name")
-
-    allowed_extensions = (".xlsx", ".xlsm", ".xltx", ".xltm")
-    if not file.filename.lower().endswith(allowed_extensions):
-        raise HTTPException(
-            status_code=400,
-            detail="Only modern Excel files are supported (.xlsx, .xlsm, .xltx, .xltm)",
-        )
-
-    file_bytes = await file.read()
-    if not file_bytes:
-        raise HTTPException(status_code=400, detail="Uploaded file is empty")
-
-    try:
-        pipeline = ExcelToLLMPipeline(
-            json_format=json_format,
-            max_rows_per_table=max_rows_per_table,
-        )
-        return pipeline.process_workbook_bytes(file_bytes, source_name=file.filename)
-    except Exception as error:
-        raise HTTPException(status_code=400, detail=f"Unable to process workbook: {error}")
-
-@app.post("/docling")
-async def docling(
-    request: Request,
-    filename: str = Query(default="upload.xlsx"),
-):
-    file_bytes, stream_name = await _extract_file_bytes(request, fallback_filename=filename)
-
-    if not file_bytes:
-        raise HTTPException(status_code=400, detail="Uploaded file is empty")
-
-    _validate_supported_office_filename(stream_name)
-
-    try:
-        doc_stream = DocumentStream(name=stream_name, stream=BytesIO(file_bytes))
-
-        converter = DocumentConverter()
-        result = converter.convert(doc_stream)
-
-        markdown = result.document.export_to_markdown()
-        return {"markdown": f"The content of the file is:\n{markdown}", "filename": stream_name}
-    except Exception as error:
-        raise HTTPException(status_code=400, detail=f"Unable to process document: {error}")
 
 
 @app.post("/docling-hierarchy")
