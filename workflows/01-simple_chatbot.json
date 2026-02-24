@@ -1,69 +1,120 @@
 {
-  "name": "01-simple_chatbot",
+  "name": "01-simple-chatbot",
   "nodes": [
     {
       "parameters": {
         "public": true,
-        "initialMessages": "I am your assistant and will answer any question",
-        "options": {}
+        "initialMessages": "INITIAL MESSAGE (set in node \"When chat message received\")",
+        "options": {
+          "subtitle": "SUBTITLE  (Set in Option)",
+          "title": "TITLE (Set in Option)"
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.4,
       "position": [
-        0,
+        -48,
         0
       ],
-      "id": "39bf622a-fc2c-49e6-8116-630c24779fc2",
+      "id": "8183c5cc-7e8a-4609-bd9d-f4d5949efef1",
       "name": "When chat message received",
-      "webhookId": "163c27fd-0b27-4cf7-a3f5-5a9d64a56230"
+      "webhookId": "e4e854f1-a2d3-4066-8717-b95aa6e255e4"
     },
     {
       "parameters": {
         "options": {
-          "systemMessage": "You are a helpful assistant. Reply to any query from user with a concise answer, one or two sentences maximum.\n\nIf you are not sure, say so and do not invent answers."
+          "systemMessage": "You are a friendly and professional assistant.\n\nRespond clearly and concisely.\nIf you are unsure, say so.\nAsk clarifying questions when needed.\nKeep responses easy to understand."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        224,
+        176,
         0
       ],
-      "id": "8ac4c1d2-e745-4e57-89e6-276236f14043",
+      "id": "874cea78-af6c-4d4f-9cae-a960f6e2912d",
       "name": "AI Agent"
     },
     {
       "parameters": {
-        "contextWindowLength": 10
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
       },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -48,
+        328
+      ],
+      "id": "bf91ad2d-1082-4f6a-ae50-c0b49ba36a9e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "E2gb0XguE0Wp1Xja",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        368,
+        312,
         224
       ],
-      "id": "1481ff99-cb0c-4fd5-8fbd-71c17fb7e1ad",
+      "id": "3cf93d13-9604-4335-a641-00b70ae1cf54",
       "name": "Simple Memory"
     },
     {
       "parameters": {
         "model": "gemma3:4b",
-        "options": {}
+        "options": {
+          "temperature": 0.7,
+          "topP": 1,
+          "frequencyPenalty": 0,
+          "keepAlive": "5m",
+          "mainGpu": 0,
+          "numPredict": -1,
+          "penalizeNewline": true
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        240,
+        184,
         224
       ],
-      "id": "0e292dc1-862b-45d4-b81d-ac8397e63fd5",
+      "id": "f3794f1b-0a13-44a8-8913-21994332b9b5",
       "name": "Ollama Chat Model",
       "credentials": {
         "ollamaApi": {
-          "id": "GBKflCrWEAR6Hb1i",
+          "id": "BcgGMW6X5A3uCPdl",
           "name": "Ollama account"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "# Simple Chatbot\n\nThis is a very basic chatbot using either a local model or OpenAI model.\n\nIt is connected to the Ollama local model first. \n\nTo connect it to OpenAI model, delete the link between `AI Agent`'s `Chat Model` and link the `OpenChatModel`\n\n### Step to rebuild this workflow: (local model)\n- Start with a node:  **`When chat message received`**\n    - define the chatbot conversation page\n    - set the parameters (initial message, options like Title and Subtitle\n- Add a node: **`AI Agent`**\n    - Define what input field is used as user prompt\n    - Define a system prompt\n- Add a local model:\n    - click on + below `Chat Model`\n    - select `Ollama Chat Model`\n    - select or create a `credential` for Ollama (`http://ollama:11434`)\n    - select one of the models available\n        - if model not available, add in the file `list-of-models.txt` and then run the script to download the model (MacOS: `scripts/download-models.sh` or Windows: `scripts/download-models.bat`)\n- Add a memory to the bot\n    - click on + below `Memory`\n    - select `Simple Memory`\n\n",
+        "height": 656,
+        "width": 608,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -896,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "45398099-3347-4c80-b0c8-d18e40e73f8e",
+      "name": "Sticky Note1"
     }
   ],
   "pinData": {},
@@ -100,23 +151,24 @@
           }
         ]
       ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
-    "availableInMCP": false,
-    "timeSavedMode": "fixed",
-    "timezone": "Asia/Shanghai",
-    "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": -1
+    "availableInMCP": false
   },
-  "versionId": "60336c71-5a6b-4316-b5ed-fbdcc187fa11",
+  "versionId": "10e22d09-4b34-4d25-9d28-f742795a36ae",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "165434c629b2d619728312a3d4d76a1c9d5da806ea3975a14855031f79835066"
+    "instanceId": "b4cb15d09715b0d0f107b3e316e6d102266355d7a35e6916a80c3b89615a146b"
   },
-  "id": "p95yyhTdC5fmhhE1",
+  "id": "e0QcMsbqSs20NZp4",
   "tags": []
 }

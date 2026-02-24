@@ -1,0 +1,84 @@
+{
+  "name": "04-python_api_test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "33493d84-3aea-489d-aef6-7703b13c0dbb",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://python:8000/api-health",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        -224
+      ],
+      "id": "9c14714b-82e0-4048-bfdc-381235f3c624",
+      "name": "Python API Health"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python:8000/test-post",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"text\": \"Hello from n8n\"\n}",
+        "options": {}
+      },
+      "id": "d7e77aaf-482e-4b0f-b478-b6c3281f0733",
+      "name": "Text Test",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        224,
+        -32
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Test",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Python API Health",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Test": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "99226c02-2d03-429e-b153-f38a7882e61c",
+  "meta": {
+    "instanceId": "165434c629b2d619728312a3d4d76a1c9d5da806ea3975a14855031f79835066"
+  },
+  "id": "i10M5vSPbh7g2X39",
+  "tags": []
+}

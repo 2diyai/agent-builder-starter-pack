@@ -1,0 +1,185 @@
+{
+  "name": "04-chatbot-search",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "4a21b548-0607-4eb9-bddf-a686c651073d",
+      "name": "When chat message received",
+      "webhookId": "7c3403fc-350d-4c7d-a710-81189ad15a5e"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "searchQuery": "={{ $json.chatInput }}",
+        "options": {
+          "outputFormat": ""
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.jinaAi",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        0
+      ],
+      "id": "e855518c-fc8d-4b3d-9bb8-97a4a8094420",
+      "name": "Search web",
+      "retryOnFail": true,
+      "credentials": {
+        "jinaAiApi": {
+          "id": "JExAjngwKM64PCr3",
+          "name": "Jina AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}\n\nBased on this query from Human, a web search was performed and returned the following results:\n<results>\n{{ $json.search_results }}\n</results>\n\nYour mission is to answer the query of the human, only using information available in the search results.\nProvide a simple answer and clear answer. \nAddress directly the query using the search results. Do not elaborate on any topic in the search result but not mentioned in the query.\nIf you do not know, say so.\n\nHuman does not know the result of the search, do not refer to it explicitely in statement such as \"The search results ...\" or \"the text ...\"",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "68b3d614-39c0-4dff-b50d-420e51159fd7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gemma3:4b",
+        "options": {
+          "numCtx": 16000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        288,
+        208
+      ],
+      "id": "fb211c24-2de4-4c9a-9324-130e6524cc8c",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "BcgGMW6X5A3uCPdl",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        208
+      ],
+      "id": "d6923f28-4f0e-4d5b-9a7d-63f3f315174d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "content",
+              "renameField": true,
+              "outputFieldName": "search_results"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        112,
+        0
+      ],
+      "id": "875ce3e5-2ea1-4310-af0b-689d36024fb2",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Search web",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search web": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "155eeedc-5feb-43e6-a5a8-eb0d1627d0da",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4cb15d09715b0d0f107b3e316e6d102266355d7a35e6916a80c3b89615a146b"
+  },
+  "id": "wLzmiHvjMFxrahpL",
+  "tags": []
+}

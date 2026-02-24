@@ -1,0 +1,116 @@
+{
+  "name": "05-work-with-images",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "allowFileUploads": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "a449d959-be55-41bf-a5eb-230a8821f2d9",
+      "name": "When chat message received",
+      "webhookId": "7b802a7e-e060-41f3-9a1f-6618c93034cd"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}\n\nimages: \"\"{{ $binary }}\"\"",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -272,
+        0
+      ],
+      "id": "55e6ca25-9dfa-403a-b11b-4cee0b1eb3bb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen3-vl:4b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        208
+      ],
+      "id": "1cbe2be7-44b2-4a39-a331-0e9c1e538d6e",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "BcgGMW6X5A3uCPdl",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        208
+      ],
+      "id": "cf52c947-75aa-4e56-8e39-a589176a66f6",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5194e02a-1774-47d6-8eec-d3cfbd5263cc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4cb15d09715b0d0f107b3e316e6d102266355d7a35e6916a80c3b89615a146b"
+  },
+  "id": "V1lCoEE9u5ErHtN7",
+  "tags": []
+}
