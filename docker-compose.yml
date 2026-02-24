@@ -32,15 +32,16 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - app_net
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
 
   python:
+    # image: vtecftwy/n8n-ollama-dev-python:1.0.0
     build:
       context: ./python
     container_name: my_python
