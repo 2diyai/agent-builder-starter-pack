@@ -29,7 +29,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        680,
+        688,
         320
       ],
       "id": "ff8c78da-2e55-442f-a780-3fc34296b439",
@@ -48,7 +48,7 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        808,
+        816,
         320
       ],
       "id": "81471906-c772-49d7-8725-dc9892b739b7",
@@ -312,13 +312,13 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "08c99e43-62b5-4151-b89b-a77c32a4f4cd",
+  "versionId": "b56a4604-01c3-4f05-adb2-d5211868d79e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "b4cb15d09715b0d0f107b3e316e6d102266355d7a35e6916a80c3b89615a146b"

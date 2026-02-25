@@ -17,47 +17,22 @@
     },
     {
       "parameters": {
-        "operation": "search",
-        "searchQuery": "={{ $json.chatInput }}",
-        "options": {
-          "outputFormat": ""
-        },
-        "requestOptions": {}
-      },
-      "type": "n8n-nodes-base.jinaAi",
-      "typeVersion": 1,
-      "position": [
-        -96,
-        0
-      ],
-      "id": "e855518c-fc8d-4b3d-9bb8-97a4a8094420",
-      "name": "Search web",
-      "retryOnFail": true,
-      "credentials": {
-        "jinaAiApi": {
-          "id": "JExAjngwKM64PCr3",
-          "name": "Jina AI account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "promptType": "define",
-        "text": "={{ $('When chat message received').item.json.chatInput }}\n\nBased on this query from Human, a web search was performed and returned the following results:\n<results>\n{{ $json.search_results }}\n</results>\n\nYour mission is to answer the query of the human, only using information available in the search results.\nProvide a simple answer and clear answer. \nAddress directly the query using the search results. Do not elaborate on any topic in the search result but not mentioned in the query.\nIf you do not know, say so.\n\nHuman does not know the result of the search, do not refer to it explicitely in statement such as \"The search results ...\" or \"the text ...\"",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        416,
-        0
+        256,
+        -32
       ],
       "id": "68b3d614-39c0-4dff-b50d-420e51159fd7",
       "name": "AI Agent"
     },
     {
       "parameters": {
-        "model": "gemma3:4b",
+        "model": "qwen3:8b",
         "options": {
           "numCtx": 16000
         }
@@ -65,7 +40,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        288,
+        240,
         208
       ],
       "id": "fb211c24-2de4-4c9a-9324-130e6524cc8c",
@@ -90,25 +65,53 @@
     },
     {
       "parameters": {
-        "fieldsToAggregate": {
-          "fieldToAggregate": [
-            {
-              "fieldToAggregate": "content",
-              "renameField": true,
-              "outputFieldName": "search_results"
-            }
-          ]
-        },
-        "options": {}
+        "operation": "search",
+        "searchQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search_Query', ``, 'string') }}",
+        "options": {},
+        "requestOptions": {
+          "timeout": 25000
+        }
       },
-      "type": "n8n-nodes-base.aggregate",
+      "type": "n8n-nodes-base.jinaAiTool",
       "typeVersion": 1,
       "position": [
-        112,
-        0
+        576,
+        208
       ],
-      "id": "875ce3e5-2ea1-4310-af0b-689d36024fb2",
-      "name": "Aggregate"
+      "id": "722a9566-ba23-4e8b-9f94-8b7385ccade4",
+      "name": "Search web in Jina AI",
+      "credentials": {
+        "jinaAiApi": {
+          "id": "JExAjngwKM64PCr3",
+          "name": "Jina AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        48,
+        208
+      ],
+      "id": "343b3b58-0516-4a87-9a62-e39d3e0f49cb",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "E2gb0XguE0Wp1Xja",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -117,18 +120,7 @@
       "main": [
         [
           {
-            "node": "Search web",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Search web": {
-      "main": [
-        [
-          {
-            "node": "Aggregate",
+            "node": "AI Agent",
             "type": "main",
             "index": 0
           }
@@ -157,25 +149,30 @@
         ]
       ]
     },
-    "Aggregate": {
-      "main": [
+    "Search web in Jina AI": {
+      "ai_tool": [
         [
           {
             "node": "AI Agent",
-            "type": "main",
+            "type": "ai_tool",
             "index": 0
           }
         ]
       ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "155eeedc-5feb-43e6-a5a8-eb0d1627d0da",
+  "versionId": "edcab239-d0fc-4cd7-aef3-7056513aa9a5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "b4cb15d09715b0d0f107b3e316e6d102266355d7a35e6916a80c3b89615a146b"
