@@ -31,4 +31,4 @@ ollama_data/
 # Development aid files
 dev/
 assets/
-
+ollama-models/
