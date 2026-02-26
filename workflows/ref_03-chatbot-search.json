@@ -1,0 +1,203 @@
+{
+  "name": "ref_03-chatbot-search",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "How can I help you?",
+        "options": {
+          "subtitle": "Ask me questions, and I may search internet for you !",
+          "title": "Chatbot with search"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -336,
+        -32
+      ],
+      "id": "4a21b548-0607-4eb9-bddf-a686c651073d",
+      "name": "When chat message received",
+      "webhookId": "7c3403fc-350d-4c7d-a710-81189ad15a5e"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -64,
+        -32
+      ],
+      "id": "68b3d614-39c0-4dff-b50d-420e51159fd7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen3-vl:4b",
+        "options": {
+          "numCtx": 16000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        192
+      ],
+      "id": "fb211c24-2de4-4c9a-9324-130e6524cc8c",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "BcgGMW6X5A3uCPdl",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        192
+      ],
+      "id": "d6923f28-4f0e-4d5b-9a7d-63f3f315174d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "searchQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search_Query', ``, 'string') }}",
+        "options": {},
+        "requestOptions": {
+          "timeout": 25000
+        }
+      },
+      "type": "n8n-nodes-base.jinaAiTool",
+      "typeVersion": 1,
+      "position": [
+        144,
+        192
+      ],
+      "id": "722a9566-ba23-4e8b-9f94-8b7385ccade4",
+      "name": "Search web in Jina AI",
+      "credentials": {
+        "jinaAiApi": {
+          "id": "JExAjngwKM64PCr3",
+          "name": "Jina AI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -112,
+        352
+      ],
+      "id": "343b3b58-0516-4a87-9a62-e39d3e0f49cb",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "E2gb0XguE0Wp1Xja",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Chatbot with search\nThis workflows makes a  **search tool** available to the LLM to allow it to perform an internet search before answering the query.\n\n\n### Nodes:\n- `When chat message received`\n- `AI Agent`\n- `Ollama Chat Model` or `OpenAI Chat Model`\n- `Simple Memory`\n- `Search web in JinaAI`:\n    - Service provided by [jina.ai](https://jina.ai/)\n    - Requires an API Key, some free credit\n    - called by the LLM when it considers it needs a search\n    - you ask the LLM to always call search in the system prompt\n \n\n### LLM Model Selection\nNot all models support tool usage. They must be trained to \"know\" how to use these tools.\n\nWith Ollama, the following models support tools:\n- qwen3\n- qwen3-vl\n- granite4\n- ministral-3",
+        "height": 576,
+        "width": 672,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1072,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "71a04f28-ed2a-4af3-9e59-b625e8602ba5",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search web in Jina AI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ee792448-9505-4755-8315-89fdcc02bd1d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4cb15d09715b0d0f107b3e316e6d102266355d7a35e6916a80c3b89615a146b"
+  },
+  "id": "wLzmiHvjMFxrahpL",
+  "tags": []
+}

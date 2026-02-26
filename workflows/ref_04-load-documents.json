@@ -1,0 +1,328 @@
+{
+  "name": "ref_04-load-documents",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}\n---\n{{ $json.markdown }}",
+        "options": {
+          "systemMessage": "=You are a helpful assistant helping the human to work with files. \nRespond clearly and concisely.\nIf you are unsure, say so.\nAsk clarifying questions when needed.\nKeep responses easy to understand.\n\nWhen provided, each file content is delimited by <<DOC_START type=.... source=filename>> and <<DOC_END>>, where type is the file type: 'excel', 'powerpoint' or 'word'. \nKeep in mind that:\n- For excel workbooks, each worksheet is delimited by <meta id=\"section:sheet:worksheet_name\"> tags. \n- For powerpoint presentations, each slide is delimoted by <meta id=\"chatper:slide-no\">\n- For word, <meta> tags do not mean anything special\n\nAlways refer to the file content, including the information in <<DOC_...>> and <meta> tags in the context to answer user queries."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        672,
+        96
+      ],
+      "id": "5a25552c-cc8c-452c-80ff-3633001e5c97",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gemma3:4b",
+        "options": {
+          "temperature": 0.4,
+          "numCtx": 32000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        688,
+        320
+      ],
+      "id": "ff8c78da-2e55-442f-a780-3fc34296b439",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "BcgGMW6X5A3uCPdl",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        816,
+        320
+      ],
+      "id": "81471906-c772-49d7-8725-dc9892b739b7",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "434acbed-6874-426a-9571-0df9afb6a031",
+              "leftValue": "={{ $binary }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        96
+      ],
+      "id": "8aa91efe-aaf7-4e82-9567-1c2c60a059a7",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Load your file and ask your questions !",
+        "options": {
+          "allowFileUploads": true,
+          "subtitle": "I will help you analyse documents: Word, PowerPoint, Excel, pdf",
+          "title": "Simple Document Assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -448,
+        96
+      ],
+      "id": "63810a52-5dfb-4635-a9fe-61e803873650",
+      "name": "If Files Attached",
+      "webhookId": "531cbd6a-3744-41c8-a010-103407064c7b"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8f58caa3-c554-4585-8eea-d347e5a823fc",
+              "name": "chatInput",
+              "value": "={{ $('If Files Attached').item.json.chatInput }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "fdb46779-cb57-4816-8f8b-23c201d0cfea",
+      "name": "Set Field w/ Files"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d7c81e19-2cdd-4c66-914e-f90aeba8951b",
+              "name": "markdown",
+              "value": "\"\"",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        192
+      ],
+      "id": "7046c476-40d3-4eda-8399-e051a87b0b99",
+      "name": "Set Fields w/o Files"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        448,
+        96
+      ],
+      "id": "b73689df-21f0-4cc6-b979-2eb82afcce60",
+      "name": "Noop - Merge Fields"
+    },
+    {
+      "parameters": {
+        "content": "# Ingest documents\n\nMS Office documents and PDF cannot be \"consumed\" by the LLM without some preprocessing. It is not straightforward. Several online services exists (e.g. LlamaParser).\n\nBut for full confidentiality, it is possible to preprocess document locally. The `agent-builder-starter-pack` includes such service.\n\n### How does it work?\n- When a file is identified (binary), it is sent to a local python service, running on your computer. In effect, this service runs like a SaaS but locally.\n- That python services uses a specialised package (`docling`) to extract the structure and the content of Word, PowerPoint, Excel and PDF files and returns it as a text that the LLM can consume.\n- N8N uses a node called `http request` to request a file conversion. This particular service is availabe at `endpoint`: `http://python:8000/docling-hierarchy`\n\n### Context Size\n- Make sure you use a model that accepts a large context window. \n- Also make sure you specifically define the context window size (e.g.32000 or 128000) as Ollama's default is 2400.\n\n### Structure the the extracted text\nThe file context in returned as a markdown text, with additional tags to provide hierarchical information with can be used by the LLM to make sense of the file structure. See example of system prompt to see how to use these.\n```\n<<DOC_START type=pdf source=\"mck.pdf\">>\n\n ...markdown content ...\n\n<meta id=\"section:sheet: Sheet Name\"  \n... some markdown text ... \n</meta>\n\n<meta id=\"chapter:slide-0\">  \n... some markdown text ... \n</meta>\n\n<<DOC_END>>\n```",
+        "height": 848,
+        "width": 720,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1376,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "1ae096f4-c932-47a2-a011-58494ba384ed",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python:8000/docling-hierarchy",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5be56585-9aaf-4d47-83c8-0657c2d4df2d",
+      "name": "Document Extraction",
+      "alwaysOutputData": false
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Document Extraction",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Fields w/o Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Files Attached": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Field w/ Files": {
+      "main": [
+        [
+          {
+            "node": "Noop - Merge Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Fields w/o Files": {
+      "main": [
+        [
+          {
+            "node": "Noop - Merge Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Noop - Merge Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Extraction": {
+      "main": [
+        [
+          {
+            "node": "Set Field w/ Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b56a4604-01c3-4f05-adb2-d5211868d79e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4cb15d09715b0d0f107b3e316e6d102266355d7a35e6916a80c3b89615a146b"
+  },
+  "id": "FXyVOyWBZhik360x",
+  "tags": []
+}

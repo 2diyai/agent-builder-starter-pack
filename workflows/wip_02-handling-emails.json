@@ -1,0 +1,64 @@
+{
+  "name": "wip_02-handling-emails",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        -1056,
+        -32
+      ],
+      "id": "3655cb6b-0d9d-4538-926a-f0a8cfd787a9",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "p5Y6pJ2438kmlpAp",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "rag@charlier-tang.com",
+        "toEmail": "etienne.charlier@2diyai.com",
+        "subject": "Overview",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5f0b2d5a-2e00-4b83-a78d-8bade3893237",
+      "name": "Send an Email",
+      "webhookId": "d43d85d4-8a35-4bde-9bbf-eb21f3107748",
+      "credentials": {
+        "smtp": {
+          "id": "N9VHUmhwV9OToSkV",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7e5fce14-6179-4c5e-bc2a-fe482da77871",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4cb15d09715b0d0f107b3e316e6d102266355d7a35e6916a80c3b89615a146b"
+  },
+  "id": "KZV0ZQr8UhTU8ibq",
+  "tags": []
+}
