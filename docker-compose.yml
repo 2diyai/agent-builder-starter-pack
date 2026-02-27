@@ -12,10 +12,6 @@ services:
       - N8N_DIAGNOSTICS_ENABLED=false
       - N8N_PERSONALIZATION_ENABLED=false
       - N8N_SECURE_COOKIE=false
-  # TODO Support for ubunty proxy on WSL  - This breaks inter container communication b/c other settings here. 
-      # - HTTP_PROXY=http://host.docker.internal:16005
-      # - HTTPS_PROXY=http://host.docker.internal:16005
-      # - NO_PROXY=localhost,127.0.0.1,host.docker.internal
     volumes:
       - n8n_data:/home/node/.n8n
     depends_on:
@@ -33,16 +29,8 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - app_net
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
 
   python:
-    # image: vtecftwy/n8n-ollama-dev-python:1.0.0
     build:
       context: ./python
     container_name: my_python
