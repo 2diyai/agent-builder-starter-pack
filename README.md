@@ -34,7 +34,7 @@ Together, these components create a safe and practical environment to explore ag
 
 ## How do I work with the Agent Builder Starter Pack?
 
-> Work in Progress
+Instructions on how to start and stop the containers, and how to work with N8N [here](https://github.com/2diyai/agent-builder-starter-pack/blob/main/docs%2Fwork-with-agent-builder.md)
 
 
 ## Disclaimer
