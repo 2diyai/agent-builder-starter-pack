@@ -1,0 +1,29 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    # image: ollama/ollama:<tested-version>
+    # pull_policy: always       # optional: always check for a new image on `up`
+    container_name: my_ollama
+    restart: unless-stopped   # recover automatically after Docker/host restarts
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - app_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  ollama_data:
+    external: true
+    name: agent-builder_ollama_data
+
+networks:
+  app_net:
+    driver: bridge
