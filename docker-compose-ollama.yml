@@ -1,12 +1,15 @@
 services:
   ollama:
-    image: ollama/ollama:latest
-    # image: ollama/ollama:<tested-version>
+    image: ollama/ollama:0.32.9
+    # image: ollama/ollama:latest
     # pull_policy: always       # optional: always check for a new image on `up`
     container_name: my_ollama
     restart: unless-stopped   # recover automatically after Docker/host restarts
     ports:
-      - "11435:11434" # expose the Ollama API port to the host and avoid conflict with other ollama installed
+      - "127.0.0.1:11435:11434"  # expose docker Ollama API to localhost only (for security) on port 11435 to avoid conflicts with local ollama
+    environment:
+      OLLAMA_CONTEXT_LENGTH: "64000"  # optional: increase context length for larger models
+      # OLLAMA_CONTEXT_LENGTH: "120000"  # optional: increase context length for larger models
     volumes:
       - ollama_data:/root/.ollama
     networks:
