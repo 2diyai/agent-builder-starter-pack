@@ -6,7 +6,7 @@ services:
     container_name: my_ollama
     restart: unless-stopped   # recover automatically after Docker/host restarts
     ports:
-      - "11434:11434"
+      - "11435:11434" # expose the Ollama API port to the host and avoid conflict with other ollama installed
     volumes:
       - ollama_data:/root/.ollama
     networks:
